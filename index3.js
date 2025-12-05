@@ -1,13 +1,11 @@
 const express = require('express')
 const app = express();
 
-//issue in code :currently if age is <14, api giving response, but if age >14, api is hanged, not giving any response
-//issue : because u wrote next, instead of next(); 
-//defining middleware
+//issue is fixed
 function checkAgeMiddleware(req, res, next) {
     const age = req.query.age;
     if (age > 14) {
-        next;
+        next();
     } else {
         res.status(411).json({
             msg: "Sorry you are not eligible"
