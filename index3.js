@@ -1,23 +1,32 @@
 const express = require('express')
 const app = express();
 
-//returns boolean if age >14 
-function checkAge(age) {
-    if (age > 14) return true; else return false;
-}
-
-app.get("/ride1", function (req, res) {
+//issue in code :currently if age is <14, api giving response, but if age >14, api is hanged, not giving any response
+//issue : because u wrote next, instead of next(); 
+//defining middleware
+function checkAgeMiddleware(req, res, next) {
     const age = req.query.age;
-    if (checkAge(age)) {
-        res.status(200).json({
-            msg: "you have successfully riden ride1"
-        })
+    if (age > 14) {
+        next;
     } else {
         res.status(411).json({
-            msg : "sorry you are not eligible"
+            msg: "Sorry you are not eligible"
         })
     }
+}
 
+//calling middleware : calls the next middleware fns in the stack
+app.get("/ride1",checkAgeMiddleware, function (req, res) {
+    res.status(200).json({
+        msg: "you have successfully riden ride1"
+    })
 })
+
+app.get("/ride2",checkAgeMiddleware, function (req, res) {
+    res.status(200).json({
+        msg: "you have successfully riden ride2"
+    })
+})
+
 
 app.listen(8080);
