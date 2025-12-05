@@ -15,6 +15,7 @@ function calculate(n) {
     return ans;
 }
 
+//req - request, res - response
 app.get("/", function (req, res) {
     const  n = req.query.n;
     const ans = calculate(n);
