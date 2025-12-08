@@ -7,6 +7,7 @@ app.use(function (req, res, next) {
     console.log('[' + timestamp + ']' + req.method + '  ' + req.originalUrl);
     next();
 })
+app.use(express.json());
 
 app.get('/multiply', function (req, res) {
     const n1 = req.query.n1;
@@ -17,13 +18,22 @@ app.get('/multiply', function (req, res) {
     });
 })
 
-app.get('/add/:firstArg/:secondArg', function (req, res) {
-    const n1 = parseInt(req.params.firstArg);
-    const n2 = parseInt(req.params.secondArg);
+// app.get('/add/:firstArg/:secondArg', function (req, res) {
+//     const n1 = parseInt(req.params.firstArg);
+//     const n2 = parseInt(req.params.secondArg);
+
+//     var sum = n1 + n2;
+//     res.status(200).json({
+//         "sum": sum
+//     });
+// })
+app.post('/sum', function (req, res) {
+    const n1 = parseInt(req.body.n1);
+    const n2 = parseInt(req.body.n2);
 
     var sum = n1 + n2;
     res.status(200).json({
-        "sum": sum
+        "result": sum
     });
 })
 app.get('/divide', function (req, res) {
