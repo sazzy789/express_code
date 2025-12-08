@@ -10,11 +10,11 @@ app.get('/multiply', function (req, res) {
         "product": product
     });
 })
-//check issue ijn operation_issue.png ? 
-// why when passing 2,3, giving 23
+//we used parseInt to convert into Integer
+//check operation_fixed.png
 app.get('/add', function (req, res) {
-    const n1 = req.query.n1;
-    const n2 = req.query.n2;
+    const n1 = parseInt(req.query.n1);
+    const n2 = parseInt(req.query.n2);
 
     var sum = n1 + n2;
     res.status(200).json({
@@ -31,8 +31,8 @@ app.get('/divide', function (req, res) {
     });
 })
 app.get('/subtract', function (req, res) {
-    const n1 = req.query.n1;
-    const n2 = req.query.n2;
+    const n1 = parseInt(req.query.n1);
+    const n2 = parseInt(req.query.n2);
 
     var subtract = n1 - n2;
     res.status(200).json({
