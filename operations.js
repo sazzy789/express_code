@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+//implementing cors library
+const cors = require('cors');
+
 //Create a middleware function that logs each incoming request’s HTTP method, URL, and timestamp to the console
 app.use(function (req, res, next) {
     const timestamp = new Date();
@@ -8,6 +11,12 @@ app.use(function (req, res, next) {
     next();
 })
 app.use(express.json());
+
+// using cors
+// adding below line we allow backend to accpet requests from everywhere
+//But what is we want only from specific domains/hosts??
+app.use(cors());
+
 
 app.get('/multiply', function (req, res) {
     const n1 = req.query.n1;
