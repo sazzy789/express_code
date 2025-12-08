@@ -13,9 +13,19 @@ app.use(function (req, res, next) {
 app.use(express.json());
 
 // using cors
-// adding below line we allow backend to accpet requests from everywhere
 //But what is we want only from specific domains/hosts??
-app.use(cors());
+//answer is below
+//code taken from cors npm registery
+var whitelist = ['http://localhost:3000']
+app.use(cors({
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
+}));
 
 
 app.get('/multiply', function (req, res) {
