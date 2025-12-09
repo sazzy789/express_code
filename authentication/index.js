@@ -54,6 +54,27 @@ app.post('/signin',function(req,res){
 
 });
 
+app.get("/me",function(req,res){
+    const token = req.headers.authorization;
+    const userfound = users.find(function(u){
+        if(u.token === token){
+            return true;
+        } else{
+            return false;
+        }
+    })
+    if(userfound){
+        res.status(200).json({
+            "username" : userfound.username,
+            "message" : "you are authenticated"
+        })
+    } else {
+        res.status(401).json({
+            "message" : "Unauthorized user"
+        })
+    }
+})
+
 
 app.listen(8081);
 
