@@ -1,18 +1,11 @@
 const express = require('express');
-const { randomBytes } = require("node:crypto");
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = "ilovemotii"
 
 const app = express();
-
-function generateToken(length) {
-    if (length % 2 !== 0) {
-        length++;
-    }
-    return randomBytes(length / 2).toString("hex");
-}
-
-var users = [];
-
 app.use(express.json());
+var users = [];
 
 app.post('/signup', function (req, res) {
     var userInfo = {
@@ -40,8 +33,10 @@ app.post('/signin', function (req, res) {
     })
 
     if (userfound) {
-        const token = generateToken(24);
-        userfound.token = token;
+        const token = jwt.sign({
+            username : username
+        }, JWT_SECRET);
+        // userfound.token = token;
         res.status(200).json({
             token: token
         })
@@ -56,8 +51,13 @@ app.post('/signin', function (req, res) {
 /* Let’s create an endpoint (/me ) that returns the user their information `only if they send their token */
 app.get("/me", function (req, res) {
     const token = req.headers.authorization;
+    //converting jwt into username
+    const decodedInformation = jwt.verify(token,JWT_SECRET); // {username : "satyam"}
+
+    const username = decodedInformation.username;
+
     const userfound = users.find(function (u) {
-        if (u.token === token) {
+        if (u.username === username) {
             return true;
         } else {
             return false;
@@ -75,27 +75,22 @@ app.get("/me", function (req, res) {
     }
 })
 
-
-app.listen(8081);
+app.listen(8000);
 
 /*
-Lets initialise an express app that we will use to generate an `authenticated backend` today.
+Replace token logic with jwt
+Lets change the token logic that we had to use jwts
 
-- Initialise an empty Node.js project
- 
-- Create an `index.js` file, open the project in visual studio code
-    
-- Add `express` as a dependency
-    
-- Create two new  POST routes, one for `signing up` and one for `signing in`
-    
-- Use `express.json` as a middleware to parse the post request body
+Add the jsonwebtoken library as a dependency - [https://www.npmjs.com/package/jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
 
-- Create an `in memory` variable called `users` where you store the `username` , `password` and a `token` (we will come to where this token is created later.
+Get rid of our generateToken function
 
-- Complete the signup endpoint to store user information in the `in memory variable`
- 
-- Create a function called `generateToken` that generates a random string for you
+Create a JWT_SECRET variable
 
-- Finish the signin endpoint. It should generate a token for the user and put it in the `in memory` variable for that user
+Create a jwt for the user instead of generating a token
+
+Notice we put the username inside the token. The jwt holds your state.
+You no longer need to store the token in the global users variable
+
+In the /me endpoint, use jwt.verify to verify the token
 */
