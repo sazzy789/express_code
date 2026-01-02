@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors= require('cors');
 
 const app = express();
 app.use(express.json());
@@ -7,14 +8,16 @@ const JWT_SECRET = 'JWT_SECRET';
 
 const users = [];
 
+app.use(cors());
+
 
 app.post("/signup", function (req, res) {
     const username = req.body.username;
-    const passowrd = req.body.passowrd;
+    const password = req.body.password;
 
     users.push({
         username: username,
-        passowrd: passowrd
+        password: password
     })
 
     res.status(200).json({
@@ -25,10 +28,10 @@ app.post("/signup", function (req, res) {
 
 app.post("/signin", function (req, res) {
     const username = req.body.username;
-    const passowrd = req.body.passowrd;
+    const password = req.body.password;
 
     const userfound = users.find(function (u) {
-        if (u.username == username && u.passowrd == passowrd) {
+        if (u.username == username && u.password == password) {
             return true;
         } else {
             return false;
@@ -75,7 +78,7 @@ app.get("/me", auth, function (req, res) {
     if (userfound) {
         res.status(200).json({
             "message": "You are authenticated",
-            token: token
+            username: req.username
         })
     } else {
         res.status(401).json({
